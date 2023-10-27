@@ -15,12 +15,12 @@ When you run it, you'll see the following:
 
 (If you don't have a Teensy plugged in, that section will be blank of course). If you've never ran this before, you should Refresh the list of available firmware, so press that Refresh List button at the top.
 
-![image](https://github.com/lansalot/AOGTeensyFlasher/assets/9885921/18fd90d8-2344-4829-b624-7214a773c474)
+![image](https://github.com/lansalot/AOGTeensyFlasher/assets/9885921/f728d099-cf6a-43f5-a733-bbd19f5a117f)
 
 The list is retrieved from github and saved locally. Saving locally means you can experiment with adding other firmwares in of your choice, and see how you get on. If you have any firmwares that should be added to the tool, please log an issue on github or message andyinv/lansalot on discourse/telegram etc.
 
 Now, it's simply a matter of picking the firmware you wish - if it's not present already, it'll be downloaded - and press Program!
 
-![image](https://github.com/lansalot/AOGTeensyFlasher/assets/9885921/6c905be2-8465-4bc5-80e7-e86b6901d376)
+![image](https://github.com/lansalot/AOGTeensyFlasher/assets/9885921/ec14d4c4-5bff-428e-812e-7987035d2aef)
 
 If anything goes wrong, make sure you don't have the Arduino IDE open or anything like that. And again, any issues, please let us know.
