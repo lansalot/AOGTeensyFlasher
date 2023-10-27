@@ -125,7 +125,7 @@ jobs:
       
     - name: Build Artifact AOGTeensyFlasher
       shell: powershell
-      run: Compress-Archive -Path bin\Release\* -DestinationPath AOGTeensyFlasher.zip -Force
+      run: Compress-Archive -Path TeensyFlasher\bin\Release\* -DestinationPath AOGTeensyFlasher.zip -Force
 
     - name: Create Release
       id: create_release
