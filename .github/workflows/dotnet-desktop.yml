@@ -9,6 +9,7 @@ on:
       - feature/*
       - release/*
       - master
+  workflow_dispatch:
 
 env:
   # Path to the solution file relative to the root of the project.https://github.com/jaapvandenhandel/AgOpenGPS/network/members
