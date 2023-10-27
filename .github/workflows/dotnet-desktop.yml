@@ -121,11 +121,11 @@ jobs:
    
     - name: Directory Listing
       shell: cmd
-      run: dir
+      run: dir /s /b
       
     - name: Build Artifact AOGTeensyFlasher
       shell: powershell
-      run: Compress-Archive -Path .\SourceCode\AOGTeensyFlasher\bin\Release\* -DestinationPath AOGTeensyFlasher.zip -Force
+      run: Compress-Archive -Path bin\Release\* -DestinationPath AOGTeensyFlasher.zip -Force
 
     - name: Create Release
       id: create_release
