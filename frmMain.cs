@@ -27,6 +27,7 @@ namespace TeensyFlasher
         void LogMessage(string Text)
         {
             txtMessages.Text += Text + "\r\n";
+            txtMessages.SelectionStart = txtMessages.Text.Length;
             txtMessages.ScrollToCaret();
         }
         void UpdateFirmwareBox()
