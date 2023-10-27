@@ -33,11 +33,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="libTeensySharp">
-      <HintPath>..\..\..\..\..\..\..\Github\TeensySharp\src\libTeensySharp\bin\Debug\net48\libTeensySharp.dll</HintPath>
+    <Reference Include="libTeensySharp, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\libTeensySharp.dll</HintPath>
     </Reference>
-    <Reference Include="libUsbTree">
-      <HintPath>..\..\..\..\..\..\..\Github\TeensySharp\src\libTeensySharp\bin\Debug\net48\libUsbTree.dll</HintPath>
+    <Reference Include="libUsbTree, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\libUsbTree.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -85,6 +87,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="libTeensySharp.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="libUsbTree.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
