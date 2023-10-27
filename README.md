@@ -7,7 +7,7 @@ First of all - full credit to https://github.com/luni64/TeensySharp for this exc
 
 People have had issues with various vwersions of TeensyDuino (specifically, versions higher than 1.57 causing boot loops) and also in locating different versions of the firmware for specific situations.
 
-This tool aims to simplify all that.
+This tool aims to simplify all that. Go to the Releases section and download the big AOGTeensyFlasher zip file, unzip it, and run the AOGTeensyFlasher.exe file.
 
 When you run it, you'll see the following:
 
