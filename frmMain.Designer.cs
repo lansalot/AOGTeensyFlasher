@@ -75,9 +75,9 @@ namespace TeensyFlasher
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(13, 344);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(246, 36);
+            this.label2.Size = new System.Drawing.Size(112, 36);
             this.label2.TabIndex = 3;
-            this.label2.Text = "2. Plug in Teensy";
+            this.label2.Text = "Teensy";
             // 
             // btnProgram
             // 
@@ -107,6 +107,7 @@ namespace TeensyFlasher
             this.txtMessages.Location = new System.Drawing.Point(19, 462);
             this.txtMessages.Multiline = true;
             this.txtMessages.Name = "txtMessages";
+            this.txtMessages.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtMessages.Size = new System.Drawing.Size(862, 196);
             this.txtMessages.TabIndex = 6;
             // 
@@ -129,11 +130,12 @@ namespace TeensyFlasher
             // 
             // lbTeensies
             // 
+            this.lbTeensies.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbTeensies.FormattingEnabled = true;
-            this.lbTeensies.ItemHeight = 16;
-            this.lbTeensies.Location = new System.Drawing.Point(265, 344);
+            this.lbTeensies.ItemHeight = 25;
+            this.lbTeensies.Location = new System.Drawing.Point(159, 344);
             this.lbTeensies.Name = "lbTeensies";
-            this.lbTeensies.Size = new System.Drawing.Size(356, 84);
+            this.lbTeensies.Size = new System.Drawing.Size(475, 79);
             this.lbTeensies.TabIndex = 10;
             // 
             // frmMain

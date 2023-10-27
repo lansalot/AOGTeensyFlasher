@@ -133,7 +133,16 @@ namespace TeensyFlasher
             {
                 var progress = new Progress<int>(v => pbProgram.Value = v);
                 var result = await teensy.UploadAsync(localHexFile, progress);
-                LogMessage("Finished programming");
+                if (result.ToString() != "OK")
+                {
+                    LogMessage("Error: " + result.ToString());
+                    LogMessage("Are you sure nothing else is using the Teensy?");
+                    LogMessage("Close the Arduino IDE and try again, or unplug/reinsert the Teensy");
+                }
+                else
+                {
+                    LogMessage("Finished programming");
+                }
                 pbProgram.Value = 0;
             }
         }
