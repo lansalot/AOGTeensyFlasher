@@ -1,0 +1,5 @@
+﻿Firmware,URL
+All-in-one,https://raw.githubusercontent.com/lansalot/AOGTeensyFlasher/main/Firmwares/AOG-4.1.hex
+CommonRail's CANBUS,https://raw.githubusercontent.com/lansalot/AOGTeensyFlasher/main/Firmwares/AOG-CommonRail-CANBUS.hex
+CommonRail's CANBUS (all-in-one board),https://raw.githubusercontent.com/lansalot/AOGTeensyFlasher/main/Firmwares/CANBUS-All-In-One.hex
+Keya Motorwheel,https://raw.githubusercontent.com/lansalot/AOGTeensyFlasher/main/Firmwares/AOG-Keya-CANBUS.hex

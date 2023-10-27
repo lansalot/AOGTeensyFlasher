@@ -110,7 +110,7 @@ namespace TeensyFlasher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(913, 590);
+            this.ClientSize = new System.Drawing.Size(913, 350);
             this.Controls.Add(this.btnREfresh);
             this.Controls.Add(this.btnProgram);
             this.Controls.Add(this.label2);
