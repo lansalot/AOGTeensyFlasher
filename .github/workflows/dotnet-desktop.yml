@@ -30,10 +30,6 @@ jobs:
       with:
         versionSpec: '5.x'
       
-    - name: Install 7Zip PowerShell Module
-      shell: powershell
-      run: Install-Module 7Zip4PowerShell -Force
-         
     - name: Checkout
       uses: actions/checkout@v2
       with:
@@ -129,7 +125,7 @@ jobs:
       
     - name: Build Artifact AOGTeensyFlasher
       shell: powershell
-      run: Compress-7Zip "AOGTeensyFlasher" -ArchiveFileName "AOGTeensyFlasher.zip" -Format Zip    
+      run: Compress-Archive -Path .\SourceCode\AOGTeensyFlasher\bin\Release\* -DestinationPath AOGTeensyFlasher.zip -Force
 
     - name: Create Release
       id: create_release
