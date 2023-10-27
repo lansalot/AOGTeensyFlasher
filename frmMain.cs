@@ -23,6 +23,20 @@ namespace TeensyFlasher
         String localCSV = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Firmwares.csv");
         string localHexStub = AppDomain.CurrentDomain.BaseDirectory;
         string chosenFirmware = "";
+
+        void LogMessage(string Text)
+        {
+            txtMessages.Text += Text + "\r\n";
+            txtMessages.ScrollToCaret();
+        }
+        void UpdateFirmwareBox()
+        {
+            // Read the CSV file and fill the listbox with the first column
+            var lines = File.ReadAllLines(localCSV);
+            var firstColumn = lines.Select(line => line.Split(',')[0]).ToList();
+            lbFirmware.DataSource = firstColumn;
+            lbFirmware.SelectedIndex = -1;
+        }
         public frmMain()
         {
             InitializeComponent();
@@ -33,6 +47,10 @@ namespace TeensyFlasher
                 lbTeensies.Items.Add(teensy);
             }
             if (lbTeensies.Items.Count > 0) lbTeensies.SelectedIndex = 0;
+            if (File.Exists(localCSV))
+            {
+                UpdateFirmwareBox();
+            }
         }
 
         private void ConnectedTeensiesChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -54,6 +72,10 @@ namespace TeensyFlasher
                     break;
             }
             if (lbTeensies.SelectedIndex == -1 && lbTeensies.Items.Count > 0) lbTeensies.SelectedIndex = 0;
+            if (lbTeensies.Items.Count == 0)
+            {
+                btnProgram.Enabled = false;
+            }
         }
         private void frmMain_Load(object sender, EventArgs e)
         {
@@ -63,53 +85,57 @@ namespace TeensyFlasher
         private void lbFirmware_SelectedIndexChanged(object sender, EventArgs e)
         {
             var lines = File.ReadAllLines(localCSV);
-            var secondColumn = lines
+            chosenFirmware = lines
                 .Where(line => line.Split(',')[0] == (String)lbFirmware.SelectedValue)
                 .Select(line => line.Split(',')[1])
-                .ToList();
-
+                .FirstOrDefault();
+            if (lbFirmware.SelectedIndex > -1)
+            {
+                btnProgram.Enabled = true;
+            }
         }
 
-        private void btnRefresh_Click(object sender, EventArgs e)
+        bool DownloadFile(string url, string localFile)
         {
             try
             {
-                string url = "https://raw.githubusercontent.com/lansalot/AOGTeensyFlasher/main/Firmwares.csv";
                 using (WebClient client = new WebClient())
                 {
-                    client.DownloadFile(url, localCSV);
+                    client.DownloadFile(url, localFile);
+                    LogMessage("Downloaded " + localFile);
+                    return true;
                 }
-                txtMessages.Text += "Firmware list downloaded!\r\n";
-
-                // Read the CSV file and fill the listbox with the first column
-                var lines = File.ReadAllLines(localCSV);
-                var firstColumn = lines.Select(line => line.Split(',')[0]).ToList();
-                lbFirmware.DataSource = firstColumn;
-
             }
             catch
             {
-                txtMessages.Text += "Error downloading firmware list\r\n";
+                LogMessage("Error downloading " + localFile);
+                return false;
             }
         }
-
-        private void btnProgram_Click(object sender, EventArgs e)
+        private void btnRefresh_Click(object sender, EventArgs e)
         {
+            string url = "https://raw.githubusercontent.com/lansalot/AOGTeensyFlasher/main/Firmwares.csv";
+            DownloadFile(url, localCSV);
+            UpdateFirmwareBox();
+        }
+
+        private async void btnProgram_Click(object sender, EventArgs e)
+        {
+            string localHexFile = System.IO.Path.Combine(localHexStub, Path.GetFileName(chosenFirmware));
+            if (!File.Exists(localHexFile))
+            {
+                LogMessage("Firmware file not found locally.. downloading");
+                if (!DownloadFile(chosenFirmware, localHexFile)) return;
+            }
+            LogMessage("Programming!");
             var teensy = lbTeensies.SelectedItem as ITeensy;
-            //if (teensy != null)
-            //{
-            //    string filename = tbHexfile.Text;
-            //    if (File.Exists(filename))
-            //    {
-            //        var progress = new Progress<int>(v => progressBar.Value = v);
-            //        progressBar.Visible = true;
-            //        var result = await teensy.UploadAsync(filename, progress);
-            //        MessageBox.Show(result.ToString(), "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //        progressBar.Visible = false;
-            //        progressBar.Value = 0;
-            //    }
-            //    else MessageBox.Show("File does not exist", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
+            if (teensy != null)
+            {
+                var progress = new Progress<int>(v => pbProgram.Value = v);
+                var result = await teensy.UploadAsync(localHexFile, progress);
+                LogMessage("Finished programming");
+                pbProgram.Value = 0;
+            }
         }
     }
 }
