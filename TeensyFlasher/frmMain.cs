@@ -134,7 +134,11 @@ namespace TeensyFlasher
             {
                 var progress = new Progress<int>(v => pbProgram.Value = v);
                 var result = await teensy.UploadAsync(localHexFile, progress);
-                if (result.ToString() != "OK")
+                if (result.ToString() == "RebootError")
+                {
+                    LogMessage("Couldn't reboot Teensy - try pressing the white button on it to trigger download and press Program again");
+                }
+                else if (result.ToString() != "OK")
                 {
                     LogMessage("Error: " + result.ToString());
                     LogMessage("Are you sure nothing else is using the Teensy?");
