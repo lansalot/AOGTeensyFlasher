@@ -26,9 +26,9 @@ jobs:
 
     steps:
     - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v0.9.9
+      uses: gittools/actions/gitversion/setup@v0
       with:
-        versionSpec: '1.x'
+        versionSpec: '5.x'
       
     - name: Install 7Zip PowerShell Module
       shell: powershell
