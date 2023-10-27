@@ -5,3 +5,6 @@
 /.vs/TeensyFlasher
 /bin/Debug
 /obj/Debug
+/TeensyFlasher/bin
+/TeensyFlasher/obj
+
