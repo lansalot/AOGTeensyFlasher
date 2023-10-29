@@ -24,3 +24,11 @@ Now, it's simply a matter of picking the firmware you wish - if it's not present
 ![image](https://github.com/lansalot/AOGTeensyFlasher/assets/9885921/ec14d4c4-5bff-428e-812e-7987035d2aef)
 
 If anything goes wrong, make sure you don't have the Arduino IDE open or anything like that. And again, any issues, please let us know.
+
+# How it works, and adding your own custom images
+
+Out of the box, the app doesn't know about any images, or where to find them. That's why it comes up empty and advises you to press Refresh.
+
+When you do that, it'll connect to this repo and pull the CSV file and store it in the same folder as the app, populating the listbox with the entries in it. If you edit that CSV file, you can add your own firmwares to the list - just don't press Refresh again and it won't get overwritten by the original !
+
+If the HEX file you want to flash isn't also in the same folder as the app, it'll pull it from the repo and cache it there. Once it has the CSV and the HEX files you're interested in, it will never need internet access again (until you press Refresh again of course). So this means that if you edit the CSV, and place additional HEX files in the folder, you can customise the list with your own local firmware images.
