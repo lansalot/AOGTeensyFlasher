@@ -3,6 +3,8 @@ A helper to easily flash the Teensy for agOpenGPS
 
 First of all - full credit to https://github.com/luni64/TeensySharp for this excellent library that makes flashing the Teensy super-simple!
 
+Go to the [Releases](https://github.com/lansalot/AOGTeensyFlasher/releases) page and download the latest!
+
 ## Reason for creation
 
 People have had issues with various versions of TeensyDuino (specifically, versions higher than 1.57 causing boot loops) and also in locating different versions of the firmware for specific situations.
