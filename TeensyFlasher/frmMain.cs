@@ -76,6 +76,12 @@ namespace TeensyFlasher
             if (lbTeensies.Items.Count == 0)
             {
                 btnProgram.Enabled = false;
+            } else
+            {
+                if (lbFirmware.SelectedIndex > -1)
+                {
+                    btnProgram.Enabled = true;
+                }
             }
         }
         private void frmMain_Load(object sender, EventArgs e)
@@ -90,7 +96,7 @@ namespace TeensyFlasher
                 .Where(line => line.Split(',')[0] == (String)lbFirmware.SelectedValue)
                 .Select(line => line.Split(',')[1])
                 .FirstOrDefault();
-            if (lbFirmware.SelectedIndex > -1)
+            if (lbFirmware.SelectedIndex > -1 && lbTeensies.SelectedIndex > -1 && lbTeensies.Items.Count > 0)
             {
                 btnProgram.Enabled = true;
             }
@@ -127,6 +133,11 @@ namespace TeensyFlasher
             {
                 LogMessage("Firmware file not found locally.. downloading");
                 if (!DownloadFile(chosenFirmware, localHexFile)) return;
+            }
+            if ((lbTeensies.SelectedIndex == -1) | (lbTeensies.Items.Count == 0))
+            {
+                LogMessage("Sorry, no Teensies selected to program");
+                return;
             }
             LogMessage("Programming!");
             var teensy = lbTeensies.SelectedItem as ITeensy;
