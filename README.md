@@ -1,6 +1,8 @@
 # AOGTeensyFlasher
 A helper to easily flash the Teensy for agOpenGPS
 
+[![Build and release](https://github.com/lansalot/AOGTeensyFlasher/actions/workflows/dotnet-desktop.yml/badge.svg)](https://github.com/lansalot/AOGTeensyFlasher/actions/workflows/dotnet-desktop.yml)
+
 First of all - full credit to https://github.com/luni64/TeensySharp for this excellent library that makes flashing the Teensy super-simple!
 
 Go to the [Releases](https://github.com/lansalot/AOGTeensyFlasher/releases) page and download the latest!
