@@ -2,4 +2,5 @@
 All-in-one (for v4.x),https://raw.githubusercontent.com/lansalot/AOGTeensyFlasher/main/Firmwares/AOG-4.1.hex
 CommonRail's CANBUS,https://raw.githubusercontent.com/lansalot/AOGTeensyFlasher/main/Firmwares/AOG-CommonRail-CANBUS.hex
 CommonRail's CANBUS (adapted for all-in-one board),https://raw.githubusercontent.com/lansalot/AOGTeensyFlasher/main/Firmwares/CANBUS-All-In-One.hex
+CANBUS for AIO (test added MF7S and CatMT support),https://raw.githubusercontent.com/lansalot/AOGTeensyFlasher/main/Firmwares/CANBUS-AIO-beta.hex
 Keya Motorwheel (for PCB4.1 and Keya CANBUS),https://raw.githubusercontent.com/lansalot/AOGTeensyFlasher/main/Firmwares/AOG-Keya-CANBUS.hex
