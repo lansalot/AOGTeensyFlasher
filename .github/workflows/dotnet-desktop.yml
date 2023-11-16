@@ -72,36 +72,36 @@ jobs:
         echo "CommitDate: ${{ steps.gitversion.outputs.commitDate }}"
   
 
-    # - uses: paulhatch/semantic-version@v4.0.1
-    #   id: versioning
-    #   with:
-    #     # The prefix to use to identify tags
-    #     tag_prefix: "v"
-    #     # A string which, if present in a git commit, indicates that a change represents a
-    #     # major (breaking) change, supports regular expressions wrapped with '/'
-    #     major_pattern: "(MAJOR)"
-    #     # Same as above except indicating a minor change, supports regular expressions wrapped with '/'
-    #     minor_pattern: "(MINOR)"
-    #     # A string to determine the format of the version output
-    #     format: "v${major}.${minor}.${patch}-prerelease.${increment}"
-    #     # Optional path to check for changes. If any changes are detected in the path the
-    #     # 'changed' output will true. Enter multiple paths separated by spaces.
-    #     change_path: "./SourceCode"
-    #     # Named version, will be used as suffix for name version tag
-    #     #namespace: project-b
-    #     # Indicate whether short tags like 'v1' should be supported. If false only full
-    #     # tags like 'v1.0.0' will be recognized.
-    #     short_tags: false
-    #     # If this is set to true, *every* commit will be treated as a new version.
-    #     bump_each_commit: false
+    - uses: paulhatch/semantic-version@v4.0.1
+      id: versioning
+      with:
+        # The prefix to use to identify tags
+        tag_prefix: "v"
+        # A string which, if present in a git commit, indicates that a change represents a
+        # major (breaking) change, supports regular expressions wrapped with '/'
+        major_pattern: "(MAJOR)"
+        # Same as above except indicating a minor change, supports regular expressions wrapped with '/'
+        minor_pattern: "(MINOR)"
+        # A string to determine the format of the version output
+        format: "v${major}.${minor}.${patch}-prerelease.${increment}"
+        # Optional path to check for changes. If any changes are detected in the path the
+        # 'changed' output will true. Enter multiple paths separated by spaces.
+        change_path: "./SourceCode"
+        # Named version, will be used as suffix for name version tag
+        #namespace: project-b
+        # Indicate whether short tags like 'v1' should be supported. If false only full
+        # tags like 'v1.0.0' will be recognized.
+        short_tags: false
+        # If this is set to true, *every* commit will be treated as a new version.
+        bump_each_commit: false
         
-    # - name: Update AssemblyVersion and AssemblyFileVersion
-    #   run: ./SetVersion.ps1 "${{ steps.versioning.outputs.major }}.${{ steps.versioning.outputs.minor }}.${{ steps.versioning.outputs.patch }}.${{ steps.versioning.outputs.increment }}"
-    #   shell: powershell
-
     - name: Update AssemblyVersion and AssemblyFileVersion
-      run: ./SetVersion.ps1 "${{ steps.gitversion.outputs.SemVer }}"
+      run: ./SetVersion.ps1 "${{ steps.versioning.outputs.major }}.${{ steps.versioning.outputs.minor }}.${{ steps.versioning.outputs.patch }}.${{ steps.versioning.outputs.increment }}"
       shell: powershell
+
+    # - name: Update AssemblyVersion and AssemblyFileVersion
+    #   run: ./SetVersion.ps1 "${{ steps.gitversion.outputs.SemVer }}"
+    #   shell: powershell
    
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1
@@ -130,12 +130,12 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ steps.gitversion.outputs.semVer }} ## Was: ${{ steps.versioning.outputs.version }}
-        release_name: Release ${{ steps.gitversion.outputs.semVer }} # Was: ${{ steps.versioning.outputs.version }}
+        tag_name: ${{ steps.versioning.outputs.version }} # WAS: ${{ steps.gitversion.outputs.semVer }}
+        release_name: Release ${{ steps.versioning.outputs.version }} # WAS: ${{ steps.gitversion.outputs.semVer }}
         body: |
           Automated Release by GitHub Action CI
         draft: false
-        prerelease: true
+        prerelease: false
                
     - name: Upload Release Asset AOGTeensyFlasher
       id: upload-release-asset-AOGTeensyFlasher
