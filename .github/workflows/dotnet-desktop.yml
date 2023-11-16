@@ -5,10 +5,7 @@ on:
   # but only for the dev branch
   push:
     branches:
-      - dev
-      - feature/*
-      - release/*
-      - master
+      - main
   workflow_dispatch:
 
 env:
