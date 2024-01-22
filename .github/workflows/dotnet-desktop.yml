@@ -6,6 +6,10 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - Firmwares/**
+      - .github/**
+
   workflow_dispatch:
 
 env:
