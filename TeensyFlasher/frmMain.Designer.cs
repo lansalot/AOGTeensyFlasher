@@ -49,8 +49,18 @@ namespace TeensyFlasher
             this.label1 = new System.Windows.Forms.Label();
             this.lbFirmware = new System.Windows.Forms.ListBox();
             this.tabGPS = new System.Windows.Forms.TabPage();
+            this.lblUblox = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.btnURefresh = new System.Windows.Forms.Button();
+            this.lbCOMPorts = new System.Windows.Forms.ListBox();
+            this.txtSerialChat = new System.Windows.Forms.TextBox();
+            this.lblCOMPorts = new System.Windows.Forms.Label();
+            this.btnConnect = new System.Windows.Forms.Button();
+            this.btnQuery = new System.Windows.Forms.Button();
+            this.lblFirmware = new System.Windows.Forms.Label();
             this.tbPages.SuspendLayout();
             this.tabTeensy.SuspendLayout();
+            this.tabGPS.SuspendLayout();
             this.SuspendLayout();
             // 
             // tbPages
@@ -59,11 +69,12 @@ namespace TeensyFlasher
             this.tbPages.Controls.Add(this.tabGPS);
             this.tbPages.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tbPages.Location = new System.Drawing.Point(13, 51);
-            this.tbPages.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tbPages.Margin = new System.Windows.Forms.Padding(4);
             this.tbPages.Name = "tbPages";
             this.tbPages.SelectedIndex = 0;
             this.tbPages.Size = new System.Drawing.Size(971, 719);
             this.tbPages.TabIndex = 11;
+            this.tbPages.SelectedIndexChanged += new System.EventHandler(this.tbPages_SelectedIndexChanged);
             // 
             // tabTeensy
             // 
@@ -77,9 +88,9 @@ namespace TeensyFlasher
             this.tabTeensy.Controls.Add(this.label1);
             this.tabTeensy.Controls.Add(this.lbFirmware);
             this.tabTeensy.Location = new System.Drawing.Point(4, 45);
-            this.tabTeensy.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabTeensy.Margin = new System.Windows.Forms.Padding(4);
             this.tabTeensy.Name = "tabTeensy";
-            this.tabTeensy.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabTeensy.Padding = new System.Windows.Forms.Padding(4);
             this.tabTeensy.Size = new System.Drawing.Size(963, 670);
             this.tabTeensy.TabIndex = 0;
             this.tabTeensy.Text = "Teensy";
@@ -179,19 +190,117 @@ namespace TeensyFlasher
             // 
             // tabGPS
             // 
+            this.tabGPS.Controls.Add(this.lblFirmware);
+            this.tabGPS.Controls.Add(this.btnQuery);
+            this.tabGPS.Controls.Add(this.btnConnect);
+            this.tabGPS.Controls.Add(this.lblCOMPorts);
+            this.tabGPS.Controls.Add(this.txtSerialChat);
+            this.tabGPS.Controls.Add(this.lbCOMPorts);
+            this.tabGPS.Controls.Add(this.btnURefresh);
+            this.tabGPS.Controls.Add(this.label3);
+            this.tabGPS.Controls.Add(this.lblUblox);
             this.tabGPS.Location = new System.Drawing.Point(4, 45);
-            this.tabGPS.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabGPS.Margin = new System.Windows.Forms.Padding(4);
             this.tabGPS.Name = "tabGPS";
-            this.tabGPS.Size = new System.Drawing.Size(1120, 783);
+            this.tabGPS.Size = new System.Drawing.Size(963, 670);
             this.tabGPS.TabIndex = 1;
             this.tabGPS.Text = "Ublox";
             this.tabGPS.UseVisualStyleBackColor = true;
+            // 
+            // lblUblox
+            // 
+            this.lblUblox.AutoSize = true;
+            this.lblUblox.Location = new System.Drawing.Point(20, 21);
+            this.lblUblox.Name = "lblUblox";
+            this.lblUblox.Size = new System.Drawing.Size(293, 36);
+            this.lblUblox.TabIndex = 0;
+            this.lblUblox.Text = "U-Blox Configuration";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(415, 21);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(516, 25);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "Please ensure F9P is plugged in with USB next to antenna";
+            // 
+            // btnURefresh
+            // 
+            this.btnURefresh.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnURefresh.Location = new System.Drawing.Point(27, 76);
+            this.btnURefresh.Name = "btnURefresh";
+            this.btnURefresh.Size = new System.Drawing.Size(182, 57);
+            this.btnURefresh.TabIndex = 2;
+            this.btnURefresh.Text = "Rescan Ports";
+            this.btnURefresh.UseVisualStyleBackColor = true;
+            this.btnURefresh.Click += new System.EventHandler(this.btnURefresh_Click);
+            // 
+            // lbCOMPorts
+            // 
+            this.lbCOMPorts.FormattingEnabled = true;
+            this.lbCOMPorts.ItemHeight = 36;
+            this.lbCOMPorts.Location = new System.Drawing.Point(26, 168);
+            this.lbCOMPorts.Name = "lbCOMPorts";
+            this.lbCOMPorts.Size = new System.Drawing.Size(183, 328);
+            this.lbCOMPorts.TabIndex = 3;
+            this.lbCOMPorts.SelectedIndexChanged += new System.EventHandler(this.lbCOMPorts_SelectedIndexChanged);
+            // 
+            // txtSerialChat
+            // 
+            this.txtSerialChat.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSerialChat.Location = new System.Drawing.Point(16, 523);
+            this.txtSerialChat.Multiline = true;
+            this.txtSerialChat.Name = "txtSerialChat";
+            this.txtSerialChat.Size = new System.Drawing.Size(915, 132);
+            this.txtSerialChat.TabIndex = 4;
+            // 
+            // lblCOMPorts
+            // 
+            this.lblCOMPorts.AutoSize = true;
+            this.lblCOMPorts.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCOMPorts.Location = new System.Drawing.Point(21, 140);
+            this.lblCOMPorts.Name = "lblCOMPorts";
+            this.lblCOMPorts.Size = new System.Drawing.Size(110, 25);
+            this.lblCOMPorts.TabIndex = 5;
+            this.lblCOMPorts.Text = "Serial ports";
+            // 
+            // btnConnect
+            // 
+            this.btnConnect.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnConnect.Location = new System.Drawing.Point(254, 76);
+            this.btnConnect.Name = "btnConnect";
+            this.btnConnect.Size = new System.Drawing.Size(163, 57);
+            this.btnConnect.TabIndex = 6;
+            this.btnConnect.Text = "Connect";
+            this.btnConnect.UseVisualStyleBackColor = true;
+            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
+            // 
+            // btnQuery
+            // 
+            this.btnQuery.Location = new System.Drawing.Point(472, 76);
+            this.btnQuery.Name = "btnQuery";
+            this.btnQuery.Size = new System.Drawing.Size(200, 57);
+            this.btnQuery.TabIndex = 7;
+            this.btnQuery.Text = "Query";
+            this.btnQuery.UseVisualStyleBackColor = true;
+            this.btnQuery.Click += new System.EventHandler(this.btnQuery_Click);
+            // 
+            // lblFirmware
+            // 
+            this.lblFirmware.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFirmware.Location = new System.Drawing.Point(730, 76);
+            this.lblFirmware.Name = "lblFirmware";
+            this.lblFirmware.Size = new System.Drawing.Size(201, 57);
+            this.lblFirmware.TabIndex = 8;
+            this.lblFirmware.Text = "Firmware";
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1229, 1426);
+            this.ClientSize = new System.Drawing.Size(1003, 785);
             this.Controls.Add(this.tbPages);
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "frmMain";
@@ -200,6 +309,8 @@ namespace TeensyFlasher
             this.tbPages.ResumeLayout(false);
             this.tabTeensy.ResumeLayout(false);
             this.tabTeensy.PerformLayout();
+            this.tabGPS.ResumeLayout(false);
+            this.tabGPS.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -217,6 +328,15 @@ namespace TeensyFlasher
         private Label label2;
         private Label label1;
         private ListBox lbFirmware;
+        private Button btnURefresh;
+        private Label label3;
+        private Label lblUblox;
+        private TextBox txtSerialChat;
+        private ListBox lbCOMPorts;
+        private Label lblCOMPorts;
+        private Button btnConnect;
+        private Button btnQuery;
+        private Label lblFirmware;
     }
 }
 
