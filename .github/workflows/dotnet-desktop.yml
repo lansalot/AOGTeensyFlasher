@@ -9,7 +9,8 @@ on:
     paths-ignore:
       - 'Firmwares/**'
       - '.github/**'
-
+      - 'Firmwares.csv'
+      
   workflow_dispatch:
 
 env:
