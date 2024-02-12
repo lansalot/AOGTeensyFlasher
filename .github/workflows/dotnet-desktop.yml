@@ -94,8 +94,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ steps.versioning.outputs.version }} # WAS: ${{ steps.gitversion.outputs.semVer }}
-        release_name: Release ${{ steps.versioning.outputs.version }} # WAS: ${{ steps.gitversion.outputs.semVer }}
+        tag_name: ${{ steps.versioning.outputs.version }}
+        release_name: Release ${{ steps.versioning.outputs.version }}
         body: |
           Automated Release by GitHub Action CI
         draft: false
