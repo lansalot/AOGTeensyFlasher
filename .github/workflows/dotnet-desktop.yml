@@ -133,5 +133,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         file: AOGTeensyFlasher.zip
-        tags: true
         draft: true
