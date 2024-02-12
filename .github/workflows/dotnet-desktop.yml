@@ -1,4 +1,4 @@
-name: Build and release
+asename: Build and release
 
 on:
   # Trigger the workflow on push or pull request,
@@ -133,5 +133,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         file: AOGTeensyFlasher.zip
-        update_latest_release: true
+        release_id: ${{ steps.versioning.outputs.version }}
         draft: true
+        prelease: true
