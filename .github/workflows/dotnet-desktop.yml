@@ -128,8 +128,10 @@ jobs:
 
     - name: Upload Release
       id: Upload_release
-      uses: JasonEtco/upload-to-release@master
-      with:
-        args: AOGTeensyFlasher.zip
+      uses: xresloader/upload-to-github-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        file: AOGTeensyFlasher.zip
+        tags: true
+        draft: true
