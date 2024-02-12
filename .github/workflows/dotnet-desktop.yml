@@ -88,19 +88,32 @@ jobs:
       shell: powershell
       run: Compress-Archive -Path TeensyFlasher\bin\Release\* -DestinationPath AOGTeensyFlasher.zip -Force
 
+    # - name: Create Release
+    #   id: create_release
+    #   uses: actions/create-release@latest
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #   with:
+    #     tag_name: ${{ steps.versioning.outputs.version }}
+    #     release_name: Release ${{ steps.versioning.outputs.version }}
+    #     body: |
+    #       Automated Release by GitHub Action CI
+    #     draft: false
+    #     prerelease: false
+
     - name: Create Release
-      id: create_release
-      uses: actions/create-release@latest
+      id: Create Release
+      uses: ncipollo/release-action@v1.14.0
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
       with:
-        tag_name: ${{ steps.versioning.outputs.version }}
-        release_name: Release ${{ steps.versioning.outputs.version }}
-        body: |
-          Automated Release by GitHub Action CI
-        draft: false
-        prerelease: false
-               
+        # An optional flag which indicates if we should update a release if it already exists. Defaults to false.
+        name: Release ${{ steps.versioning.outputs.version }}
+        # An optional tag for the release. If this is omitted the git ref will be used (if it is a tag).
+        tag: ${{ steps.versioning.outputs.version }}
+        # The Github token.
+        token: ${{ secrets.GITHUB_TOKEN }} 
+
     - name: Upload Release Asset AOGTeensyFlasher
       id: upload-release-asset-AOGTeensyFlasher
       uses: actions/upload-release-asset@v1
