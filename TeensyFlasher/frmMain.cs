@@ -30,12 +30,11 @@ namespace TeensyFlasher
         // 10 byte receive buffer for UBX and AOG messages. Only used to read the first few bytes.
         private byte[] _ubxParseBuffer = new byte[10];
         private int _ubxParseIndex = 0;
-        //private SerialPort _serialPort = null;
         private string SelectedComPort;
         private SerialPort _serialPort = null;
-
-        private string _FileName;
-
+        private bool isReadingData = false;
+        private string _FileName = ".\\Single.txt";
+        private bool isProgrammingF9P = false;
         #region Teensy
 
 
@@ -189,8 +188,6 @@ namespace TeensyFlasher
 
         #region UBlox
 
-        //private Thread dataReadingThread;
-        private bool isReadingData = false;
 
         private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
@@ -260,13 +257,13 @@ namespace TeensyFlasher
                 return;
             }
             _serialPort.DataReceived -= MySerialPort_DataReceived;
-            //if (dataReadingThread != null && dataReadingThread.IsAlive)
-            //{
-            //    dataReadingThread.Join(); // Wait for the thread to stop
-            //}
             if (_serialPort.IsOpen)
             {
-                _serialPort.Close(); // Close the serial port
+                _serialPort.DiscardInBuffer();
+                _serialPort.DiscardOutBuffer();
+                _serialPort.Close();
+                //_serialPort.Dispose();
+                //_serialPort.Close();
             }
         }
         private void ScanPorts()
@@ -320,54 +317,48 @@ namespace TeensyFlasher
             }
         }
 
+        private void safeChat(string chat)
+        {
+            txtSerialChat.Invoke(new MethodInvoker(delegate
+            {
+                txtSerialChat.AppendText(chat + Environment.NewLine);
+            }));
+        }
         private void MySerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             SerialPort spL = (SerialPort)sender;
+            if (spL.IsOpen == false)
+            {
+                StopReadingData();
+            }
             byte[]? buf = null;
 
-            //if (spL == null)
-            //{
-            //    var monverExample = "MON-VER - 0A 04 DC 00 45 58 54 20 43 4F 52 45 20 31 2E 30 30 20 28 30 66 61 30 61 65 29 00 00 00 00 00 00 00 00 30 30 31 39 30 30 30 30 00 00 52 4F 4D 20 42 41 53 45 20 30 78 31 31 38 42 32 30 36 30 00 00 00 00 00 00 00 00 00 00 00 46 57 56 45 52 3D 48 50 47 20 31 2E 33 32 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 50 52 4F 54 56 45 52 3D 32 37 2E 33 31 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 4D 4F 44 3D 5A 45 44 2D 46 39 50 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 47 50 53 3B 47 4C 4F 3B 47 41 4C 3B 42 44 53 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 53 42 41 53 3B 51 5A 53 53 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00";
-
-            //    // Remove MON-VER add UBX sync bytes
-            //    var monVerString = monverExample.Replace("MON-VER -", "B5 62");
-            //    var monVerBytesString = monVerString.Replace(" ", "");
-
-            //    var verBuf = ConvertHexStringToByteArray(monVerBytesString);
-            //    buf = new byte[verBuf.Length * 2];
-
-            //    Array.Copy(verBuf, 0, buf, 0, verBuf.Length);
-            //    Array.Copy(verBuf, 0, buf, verBuf.Length, verBuf.Length);
-            //}
-            //else
             if (spL == null) { return; }
-            if (spL != null)
-            {
-                buf = new byte[spL.BytesToRead];
-                spL.Read(buf, 0, buf.Length);
-            }
 
+            buf = new byte[spL.BytesToRead];
+            spL.Read(buf, 0, buf.Length);
             bool ubxMessage = false;
-
-            //for (int i = 0; i < buf.Length; i++)
-            //{
-            //    System.Diagnostics.Debug.Write((char)buf[i]);
-            //}
 
             for (var i = 0; i < buf.Length; i++)
             {
                 var b = buf[i];
 
+                if (b == 0x24 && !isProgrammingF9P) {  // $ is the start of a NMEA message
+                    try
+                    {
+                        var nmea = Encoding.UTF8.GetString(buf, i, Array.IndexOf(buf, (byte)0x0a) - 1);
+                        safeChat("NMEA: " + nmea);
+                    }
+                    catch { }
+                }
                 if (b == 0xB5)
                 {
                     _ubxParseIndex = 0;
                 }
                 else if (b == 0x62 && _ubxParseIndex == 1 && _ubxParseBuffer[0] == 0xB5)
                 {
-                    // Found a UBX message
                     ubxMessage = true;
                 }
-
 
                 if (_ubxParseIndex < _ubxParseBuffer.Length)
                 {
@@ -383,10 +374,6 @@ namespace TeensyFlasher
                 // 0x05 is ACK/NAK
                 if (ubxMessage && _ubxParseBuffer[2] == 0x05)
                 {
-                    System.Diagnostics.Debug.WriteLine("Dumping buf with _ack state " + _ack.ToString());
-                    System.Diagnostics.Debug.WriteLine(BitConverter.ToString(buf));
-                    System.Diagnostics.Debug.WriteLine("Dumping _ubxParseBuffer");
-                    System.Diagnostics.Debug.WriteLine(BitConverter.ToString(_ubxParseBuffer));
                     // 0x01 is ACK
                     if (_ubxParseBuffer[3] == 0x01)
                     {
@@ -401,16 +388,16 @@ namespace TeensyFlasher
                         _waitForAckNak.Set();
                         ResetUbxBuffer();
                     }
-
-                    // Signal waiting thread
-                    System.Diagnostics.Debug.WriteLine("Signaling thread for UBX");
+                    System.Diagnostics.Debug.WriteLine("Dumping buf with _ack state " + _ack.ToString());
+                    System.Diagnostics.Debug.WriteLine(BitConverter.ToString(buf));
+                    System.Diagnostics.Debug.WriteLine("Dumping _ubxParseBuffer");
+                    System.Diagnostics.Debug.WriteLine(BitConverter.ToString(_ubxParseBuffer));
                 }
 
                 // Check the Class and Message id, byte 2 and 3
                 // 0x0A 0x04 is MON-VER
                 if (ubxMessage && _ubxParseBuffer[2] == 0x0A && _ubxParseBuffer[3] == 0x04)
                 {
-                    // System.Diagnostics.Debug.WriteLine(BitConverter.ToString(buf));
                     int length = buf[i + 1];
                     length |= buf[i + 2] << 8;
 
@@ -496,21 +483,14 @@ namespace TeensyFlasher
                 return;
             }
 
-            if (_serialPort != null)
-            //{
-            //    _serialPort = new SerialPort(SelectedComPort);
-            //    _serialPort.BaudRate = 115200;
-            //    _serialPort.Parity = Parity.None;
-            //    _serialPort.StopBits = StopBits.One;
-            //    _serialPort.DataBits = 8;
-
-            //    _serialPort.Open();
-            //}
-            //else
+            if (_serialPort == null)
             {
                 _serialPort.DataReceived -= MySerialPort_DataReceived;
             }
-
+            btnConfigF9P.Enabled = false;
+            btnConnect.Enabled = false;
+            btnF9PFlashFirmware.Enabled = false;
+            btnURefresh.Enabled = false;
             string[] lines = null;
 
             try
@@ -523,42 +503,33 @@ namespace TeensyFlasher
                 var msg = ex.ToString();
                 MessageBox.Show(msg, "Error configuring receiver");
             }
-
+            isProgrammingF9P = true;
             if (lines != null)
             {
                 try
                 {
-                    _serialPort.DataReceived += MySerialPort_DataReceived;
+                    //_serialPort.DataReceived += MySerialPort_DataReceived; // we're already doing this
 
-                    //if (_waitForAckNak.WaitOne(10000))
+                    //byte[] monVer = new byte[] { 0xB5, 0x62, 0x0A, 0x04, 0x00, 0x00, 0x0E, 0x34 };
+                    //_serialPort.Write(monVer, 0, monVer.Length);
+
+                    //while (_serialPort.BytesToRead <= 0)
                     //{
-                    //    _serialPort.DataReceived -= MySerialPort_DataReceived;
+                    //    Thread.Sleep(10);
+                    //    _serialPort.Write(monVer, 0, monVer.Length);
                     //}
 
-                    // Check version, TODO: make that async by using DataRecieved. Because a lot more traffic can be on the line
-                    byte[] monVer = new byte[] { 0xB5, 0x62, 0x0A, 0x04, 0x00, 0x00, 0x0E, 0x34 };
-                    _serialPort.Write(monVer, 0, monVer.Length);
+                    //var monBuf = new byte[_serialPort.BytesToRead];
+                    //_serialPort.Read(monBuf, 0, monBuf.Length);
 
-                    while (_serialPort.BytesToRead <= 0)
-                    {
-                        // TODO add a timeout
-                        Thread.Sleep(10);
-                        _serialPort.Write(monVer, 0, monVer.Length);
-                    }
-
-                    var monBuf = new byte[_serialPort.BytesToRead];
-                    _serialPort.Read(monBuf, 0, monBuf.Length);
-
-                    // TODO: Check if version is equal to the one in the config file
-                    System.Diagnostics.Debug.WriteLine($"Received bytes : {monBuf.Length}");
-                    System.Diagnostics.Debug.WriteLine(BitConverter.ToString(monBuf));
+                    //System.Diagnostics.Debug.WriteLine($"Received bytes : {monBuf.Length}");
+                    //System.Diagnostics.Debug.WriteLine(BitConverter.ToString(monBuf));
 
                     _serialPort.DataReceived += MySerialPort_DataReceived;
 
-                    // Wait a little to make sure we are listening
-                    Thread.Sleep(1000);
+                    //Thread.Sleep(1000);
 
-                    System.Diagnostics.Debug.WriteLine("Configuring:");
+                    safeChat("Configuring:");
 
                     // Skip the first line of the file, that is the version
                     foreach (var line in lines.Skip(1))
@@ -567,34 +538,39 @@ namespace TeensyFlasher
                         {
                             // Maybe the receiver baudrate has changed. So send passthrouhg again
                             // Send the passthrough command
-                            // AW don't think we need this
+                            // AW don't think we need this, we're not using AOG passthru anyway and PC USB doesn't care about baudrate
                             // _serialPort.Write(passthroughCmd, 0, passthroughCmd.Length);
 
-                            if (_waitForAckNak.WaitOne(10000))
+                            if (_waitForAckNak.WaitOne(2000))
                             {
+                                // This seems to just result in a NACK, but anyway
                                 // Retry sending line
                                 if (!SendLine(line))
                                 {
-                                    MessageBox.Show("Sending the line again did not work either\r\n" + line);
-                                    break;
+                                    //safeChat("Sending the line again did not work either");
+                                    //break;
                                 }
                             }
                         }
                     }
 
-                    MessageBox.Show("Succesfully done", "Configuring receiver done");
+                    safeChat("Configuring receiver done");
                 }
                 catch (Exception ex)
                 {
-                    var msg = ex.ToString();
-                    MessageBox.Show(msg, "Error sending configuration to receiver");
+                    safeChat("Error sending configuration to receiver" + Environment.NewLine + ex.ToString());
                 }
                 finally
                 {
-                    // Remove the DataReceived event when done
-                    _serialPort.DataReceived -= MySerialPort_DataReceived;
-                    _serialPort.Dispose();
-                    _serialPort = null;
+                    //_serialPort.DataReceived -= MySerialPort_DataReceived;
+                    //_serialPort.Dispose();
+                    //_serialPort = null;
+                    isProgrammingF9P = false;
+                    btnConfigF9P.Enabled = true;
+                    btnConnect.Enabled = true;
+                    btnF9PFlashFirmware.Enabled = true;
+                    btnURefresh.Enabled = true;
+                    //StopReadingData();
                 }
             }
         }
@@ -637,16 +613,15 @@ namespace TeensyFlasher
                 // Check ACK or NAK
                 if (!_ack)
                 {
-                    // What to do?
-                    System.Diagnostics.Debug.WriteLine("NAK on: " + BitConverter.ToString(msgBytes));
+                    safeChat("NAK received");
                     return false;
                 }
-                System.Diagnostics.Debug.WriteLine("AK on: " + BitConverter.ToString(msgBytes));
+                safeChat("AK received");
                 return true;
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine("Timeout waiting for ACK on:");
+                safeChat("Timeout waiting for ACK on:");
                 System.Diagnostics.Debug.WriteLine(BitConverter.ToString(msgBytes));
                 return false;
             }
@@ -704,15 +679,6 @@ namespace TeensyFlasher
                 Console.WriteLine($"{hexSection,-41} {asciiSection}");
             }
         }
-        private void btnQuery_Click(object sender, EventArgs e)
-        {
-            if(!isReadingData)
-            {
-                txtSerialChat.AppendText("Need to connect to the port first!" + Environment.NewLine);
-                return;
-            }
-        }
-
         private static byte[] ConvertHexStringToByteArray(string hexString)
         {
             if (hexString.Length % 2 != 0)
@@ -741,63 +707,45 @@ namespace TeensyFlasher
             if (isReadingData)
             {
                 StopReadingData();
-                _serialPort.Dispose();
-
             }
             base.OnFormClosing(e);
         }
 
         private void btnF9PFlashFirmware_Click(object sender, EventArgs e)
         {
+            if (isReadingData)
+            {
+                StopReadingData();
+                btnConnect.Text = "Connect";
+            }
             // C:\Program Files (x86)\u-blox\u-center_v22.07\ubxfwupdate.exe
             // -p STDIO -b 460800:9600:460800
             // --no-fis 1 -s 0 -t 0 -v 1
             // ".\UBX_F9_100_HPG113.7e6e899c5597acddf2f5f2f70fdf5fbe.bin"
 
+            var batchFile = Path.GetTempPath() + "flashf9p.bat";
+            File.WriteAllText(batchFile, "ubxfwupdate -p \\\\.\\COM4 -b 460800:9600:460800 --no-fis 1 -s 0 -t 0 -v 1 UBX113.bin");
+            File.AppendAllText(batchFile, "\r\npause");
+
             txtSerialChat.AppendText("Flashing F9P firmware" + Environment.NewLine);
             var process = new Process();
-            process.StartInfo.FileName = @"C:\Program Files (x86)\u-blox\u-center_v22.07\ubxfwupdate.exe";
-            // read standarderror
-            //process.StartInfo.RedirectStandardError = true;
-            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.FileName = batchFile;
             process.StartInfo.UseShellExecute = false;
-            process.OutputDataReceived += OutputHandler;
-            //process.ErrorDataReceived += new DataReceivedEventHandler(OutputHandler);// read standardoutput
-
-            process.StartInfo.Arguments = "-p \\\\.\\COM4 -b 460800:9600:460800 --no-fis 1 -s 0 -t 0 -v 1 \"\\temp\\UBX_F9_100_HPG113.7e6e899c5597acddf2f5f2f70fdf5fbe.bin\"";
-
             process.Start();
-            process.BeginOutputReadLine();
-            //process.BeginErrorReadLine();
             process.WaitForExit();
             txtSerialChat.AppendText("Flashing F9P firmware complete" + Environment.NewLine);
-        }
-        void OutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
-        {
-            //* Do your stuff with the output (write to console/log/StringBuilder)
-            if (txtSerialChat.InvokeRequired)
-            {
-                Console.WriteLine(outLine.Data);
-                // update txtSerial on the main form
-                txtSerialChat.Invoke(new MethodInvoker(delegate
-                {
-                    txtSerialChat.AppendText(outLine.Data + Environment.NewLine);
-                }));
-
-
-            }
-            else
-            {
-                Console.WriteLine(outLine.Data);
-            }
-            //this.Refresh();
         }
 
         private void btnConfigF9P_Click(object sender, EventArgs e)
         {
-            if (!_serialPort.IsOpen)
+            if (_serialPort == null || !_serialPort.IsOpen)
             {
                 txtSerialChat.AppendText("Serial port is not open - please Connect" + Environment.NewLine);
+                return;
+            }
+            if (lblFirmwareWarning.ForeColor == Color.Red)
+            {
+                txtSerialChat.AppendText("Firmware MUST be version 1.13. Please flash it first." + Environment.NewLine);
                 return;
             }
             ConfigureReceiver(_FileName);

@@ -47,7 +47,6 @@ namespace TeensyFlasher
             this.btnConfigF9P = new System.Windows.Forms.Button();
             this.btnF9PFlashFirmware = new System.Windows.Forms.Button();
             this.lblFirmware = new System.Windows.Forms.Label();
-            this.btnQuery = new System.Windows.Forms.Button();
             this.btnConnect = new System.Windows.Forms.Button();
             this.lblCOMPorts = new System.Windows.Forms.Label();
             this.txtSerialChat = new System.Windows.Forms.TextBox();
@@ -76,7 +75,7 @@ namespace TeensyFlasher
             this.tbPages.Controls.Add(this.tabGPS);
             this.tbPages.Controls.Add(this.tabTeensy);
             this.tbPages.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tbPages.Location = new System.Drawing.Point(13, 51);
+            this.tbPages.Location = new System.Drawing.Point(13, 13);
             this.tbPages.Margin = new System.Windows.Forms.Padding(4);
             this.tbPages.Name = "tbPages";
             this.tbPages.SelectedIndex = 0;
@@ -91,7 +90,6 @@ namespace TeensyFlasher
             this.tabGPS.Controls.Add(this.btnConfigF9P);
             this.tabGPS.Controls.Add(this.btnF9PFlashFirmware);
             this.tabGPS.Controls.Add(this.lblFirmware);
-            this.tabGPS.Controls.Add(this.btnQuery);
             this.tabGPS.Controls.Add(this.btnConnect);
             this.tabGPS.Controls.Add(this.lblCOMPorts);
             this.tabGPS.Controls.Add(this.txtSerialChat);
@@ -123,9 +121,9 @@ namespace TeensyFlasher
             this.rbDualRelPos.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rbDualRelPos.Location = new System.Drawing.Point(13, 75);
             this.rbDualRelPos.Name = "rbDualRelPos";
-            this.rbDualRelPos.Size = new System.Drawing.Size(142, 29);
+            this.rbDualRelPos.Size = new System.Drawing.Size(201, 29);
             this.rbDualRelPos.TabIndex = 2;
-            this.rbDualRelPos.Text = "Dual-RelPos";
+            this.rbDualRelPos.Text = "Dual - Left - RelPos";
             this.rbDualRelPos.UseVisualStyleBackColor = true;
             this.rbDualRelPos.CheckedChanged += new System.EventHandler(this.rbDualRelPos_CheckedChanged);
             // 
@@ -135,9 +133,9 @@ namespace TeensyFlasher
             this.rbDualLocation.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rbDualLocation.Location = new System.Drawing.Point(13, 39);
             this.rbDualLocation.Name = "rbDualLocation";
-            this.rbDualLocation.Size = new System.Drawing.Size(154, 29);
+            this.rbDualLocation.Size = new System.Drawing.Size(220, 29);
             this.rbDualLocation.TabIndex = 1;
-            this.rbDualLocation.Text = "Dual-Location";
+            this.rbDualLocation.Text = "Dual - Right - Position";
             this.rbDualLocation.UseVisualStyleBackColor = true;
             this.rbDualLocation.CheckedChanged += new System.EventHandler(this.rbDualLocation_CheckedChanged);
             // 
@@ -194,17 +192,6 @@ namespace TeensyFlasher
             this.lblFirmware.Size = new System.Drawing.Size(306, 254);
             this.lblFirmware.TabIndex = 8;
             this.lblFirmware.Text = "Firmware";
-            // 
-            // btnQuery
-            // 
-            this.btnQuery.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnQuery.Location = new System.Drawing.Point(403, 76);
-            this.btnQuery.Name = "btnQuery";
-            this.btnQuery.Size = new System.Drawing.Size(160, 50);
-            this.btnQuery.TabIndex = 7;
-            this.btnQuery.Text = "Query";
-            this.btnQuery.UseVisualStyleBackColor = true;
-            this.btnQuery.Click += new System.EventHandler(this.btnQuery_Click);
             // 
             // btnConnect
             // 
@@ -398,7 +385,7 @@ namespace TeensyFlasher
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1003, 785);
+            this.ClientSize = new System.Drawing.Size(1003, 748);
             this.Controls.Add(this.tbPages);
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Name = "frmMain";
@@ -435,7 +422,6 @@ namespace TeensyFlasher
         private ListBox lbCOMPorts;
         private Label lblCOMPorts;
         private Button btnConnect;
-        private Button btnQuery;
         private Label lblFirmware;
         private Button btnF9PFlashFirmware;
         private Button btnConfigF9P;
