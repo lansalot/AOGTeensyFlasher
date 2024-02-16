@@ -680,6 +680,7 @@ btnConnect.Enabled = true;
             process.Start();
             process.WaitForExit();
             txtSerialChat.AppendText("Flashing F9P firmware complete" + Environment.NewLine);
+            txtSerialChat.AppendText("Now, hit configure to send the configuration!" + Environment.NewLine);
         }
 
         private void btnConfigF9P_Click(object sender, EventArgs e)
