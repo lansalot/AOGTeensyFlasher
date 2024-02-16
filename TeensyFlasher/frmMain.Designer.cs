@@ -64,6 +64,7 @@ namespace TeensyFlasher
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.lbFirmware = new System.Windows.Forms.ListBox();
+            this.pbConfiguration = new System.Windows.Forms.ProgressBar();
             this.tbPages.SuspendLayout();
             this.tabGPS.SuspendLayout();
             this.pblF9PConfig.SuspendLayout();
@@ -85,6 +86,7 @@ namespace TeensyFlasher
             // 
             // tabGPS
             // 
+            this.tabGPS.Controls.Add(this.pbConfiguration);
             this.tabGPS.Controls.Add(this.pblF9PConfig);
             this.tabGPS.Controls.Add(this.lblFirmwareWarning);
             this.tabGPS.Controls.Add(this.btnConfigF9P);
@@ -220,7 +222,8 @@ namespace TeensyFlasher
             this.txtSerialChat.Location = new System.Drawing.Point(26, 353);
             this.txtSerialChat.Multiline = true;
             this.txtSerialChat.Name = "txtSerialChat";
-            this.txtSerialChat.Size = new System.Drawing.Size(905, 301);
+            this.txtSerialChat.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtSerialChat.Size = new System.Drawing.Size(905, 285);
             this.txtSerialChat.TabIndex = 4;
             // 
             // lbCOMPorts
@@ -381,6 +384,13 @@ namespace TeensyFlasher
             this.lbFirmware.Size = new System.Drawing.Size(919, 204);
             this.lbFirmware.TabIndex = 11;
             // 
+            // pbConfiguration
+            // 
+            this.pbConfiguration.Location = new System.Drawing.Point(27, 644);
+            this.pbConfiguration.Name = "pbConfiguration";
+            this.pbConfiguration.Size = new System.Drawing.Size(904, 23);
+            this.pbConfiguration.TabIndex = 13;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -430,6 +440,7 @@ namespace TeensyFlasher
         private RadioButton rbDualRelPos;
         private RadioButton rbDualLocation;
         private RadioButton rbSingleF9P;
+        private ProgressBar pbConfiguration;
     }
 }
 

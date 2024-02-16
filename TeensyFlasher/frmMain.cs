@@ -251,7 +251,7 @@ namespace TeensyFlasher
             if (lbCOMPorts.SelectedIndex > -1)
             {
                 SelectedComPort = lbCOMPorts.SelectedItem.ToString();
-btnConnect.Enabled = true;
+                btnConnect.Enabled = true;
             }
             else
             {
@@ -277,7 +277,33 @@ btnConnect.Enabled = true;
             byte[]? buf = null;
 
             if (spL == null) { return; }
-
+            int retries = 0;
+            while (isProgrammingF9P && true) // in case a config change closes it, spin until we can re-open
+            {
+                try
+                {
+                    if (!spL.IsOpen)
+                    {
+                        safeChat(".");
+                        spL.Open();
+                        break;
+                    } else
+                    {
+                        break;
+                    }
+                }
+                catch
+                {
+                    safeChat("Sleeping " + retries.ToString());
+                }
+                retries++;
+                Thread.Sleep(100);
+                if (retries > 10)
+                {
+                    safeChat("Failed to re-open serial port - retry " + retries.ToString());
+                    break;
+                }
+            }
             buf = new byte[spL.BytesToRead];
             spL.Read(buf, 0, buf.Length);
             bool ubxMessage = false;
@@ -286,7 +312,8 @@ btnConnect.Enabled = true;
             {
                 var b = buf[i];
 
-                if (b == 0x24 && !isProgrammingF9P) {  // $ is the start of a NMEA message
+                if (b == 0x24 && !isProgrammingF9P)
+                {  // $ is the start of a NMEA message
                     try
                     {
                         var nmea = Encoding.UTF8.GetString(buf, i, Array.IndexOf(buf, (byte)0x0a) - 1);
@@ -475,8 +502,15 @@ btnConnect.Enabled = true;
                     safeChat("Configuring:");
 
                     // Skip the first line of the file, that is the version
+                    int progress = 1;
                     foreach (var line in lines.Skip(1))
                     {
+                        pbConfiguration.Invoke(new MethodInvoker(delegate
+                        {
+                            pbConfiguration.Maximum = lines.Length - 1;
+                            pbConfiguration.Value = progress;
+                            progress++;
+                        }));
                         if (!SendLine(line))
                         {
                             // Maybe the receiver baudrate has changed. So send passthrouhg again
@@ -496,7 +530,10 @@ btnConnect.Enabled = true;
                             }
                         }
                     }
-
+                    pbConfiguration.Invoke(new MethodInvoker(delegate
+                    {
+                        pbConfiguration.Value = 0;
+                    }));
                     safeChat("Configuring receiver done");
                 }
                 catch (Exception ex)
@@ -541,7 +578,7 @@ btnConnect.Enabled = true;
                     msgBytes[i] = 0x01;
                 }
             }
-
+            msgBytes[7] = 2;
             UbxCalculateCheckSum(msgBytes);
 
             _ack = false;
@@ -549,17 +586,17 @@ btnConnect.Enabled = true;
             _serialPort.Write(msgBytes, 0, msgBytes.Length);
             _serialPort.Write(msgBytes, 0, msgBytes.Length);
             _serialPort.Write(msgBytes, 0, msgBytes.Length);
-
+            Thread.Sleep(1000);
             // Wait for ack or nak, should be within 1sec.
             if (_waitForAckNak.WaitOne(1000))
             {
                 // Check ACK or NAK
                 if (!_ack)
                 {
-                    safeChat("NAK received");
+                    //safeChat("NAK received");
                     return false;
                 }
-                safeChat("AK received");
+                //safeChat("AK received");
                 return true;
             }
             else
@@ -664,10 +701,6 @@ btnConnect.Enabled = true;
                 StopReadingData();
                 btnConnect.Text = "Connect";
             }
-            // C:\Program Files (x86)\u-blox\u-center_v22.07\ubxfwupdate.exe
-            // -p STDIO -b 460800:9600:460800
-            // --no-fis 1 -s 0 -t 0 -v 1
-            // ".\UBX_F9_100_HPG113.7e6e899c5597acddf2f5f2f70fdf5fbe.bin"
 
             var batchFile = Path.GetTempPath() + "flashf9p.bat";
             File.WriteAllText(batchFile, "ubxfwupdate -p \\\\.\\" + SelectedComPort + " -b 460800:9600:460800 --no-fis 1 -s 0 -t 0 -v 1 UBX113.bin");
