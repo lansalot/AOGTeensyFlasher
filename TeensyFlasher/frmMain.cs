@@ -35,6 +35,7 @@ namespace TeensyFlasher
         private bool isReadingData = false;
         private string _FileName = ".\\Single.txt";
         private bool isProgrammingF9P = false;
+        private bool isClosing = false;
         #region Teensy
 
 
@@ -189,66 +190,6 @@ namespace TeensyFlasher
         #region UBlox
 
 
-        private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
-            //try
-            //{
-            //    if (isReadingData)
-            //    {
-            //        // This event is called when data is received on the serial port
-            //        string receivedData = _serialPort.ReadLine(); // Read the data from serial port
-            //        if (receivedData.Contains("FWVER"))
-            //        {
-            //            var txt = receivedData.Substring(receivedData.IndexOf("FWVER"), 14);
-            //            BeginInvoke(new Action(() =>
-            //            {
-            //                lblFirmware.Text = txt;
-            //                txtSerialChat.AppendText(txt + Environment.NewLine);
-            //            }));
-            //        }
-
-            //        PrintHexAndAscii(receivedData);
-            //        // Update the text box asynchronously
-            //        BeginInvoke(new Action(() =>
-            //        {
-            //            if (receivedData.StartsWith("$GN"))
-            //            {
-            //                txtSerialChat.AppendText(receivedData + Environment.NewLine);
-            //            }
-            //        }));
-            //    }
-            //}
-            //catch
-            //{
-            //    Debug.WriteLine("!");
-            //}
-        }
-
-        private void StartReadingData()
-        {
-            //    isReadingData = true;
-            //    dataReadingThread = new Thread(() =>
-            //    {
-            //        while (isReadingData)
-            //        {
-            //            try
-            //            {
-            //                if (!_serialPort.IsOpen)
-            //                    _serialPort.Open(); // Open the serial port if it's not already open
-            //            }
-            //            catch (Exception ex)
-            //            {
-            //                txtSerialChat.AppendText("Error opening serial port: " + ex.Message + Environment.NewLine);
-            //                return;
-            //            }
-
-            //            // Read data continuously
-            //            // The SerialPort_DataReceived event will be called when data is received
-            //        }
-            //    });
-            //    dataReadingThread.Start();
-        }
-
         private void StopReadingData()
         {
             isReadingData = false;
@@ -256,14 +197,15 @@ namespace TeensyFlasher
             {
                 return;
             }
-            _serialPort.DataReceived -= MySerialPort_DataReceived;
             if (_serialPort.IsOpen)
             {
                 _serialPort.DiscardInBuffer();
                 _serialPort.DiscardOutBuffer();
-                _serialPort.Close();
-                //_serialPort.Dispose();
-                //_serialPort.Close();
+                _serialPort.DataReceived -= MySerialPort_DataReceived;
+                if (!isClosing)
+                {
+                    _serialPort.Close();
+                }
             }
         }
         private void ScanPorts()
@@ -293,7 +235,6 @@ namespace TeensyFlasher
                     txtSerialChat.AppendText("Please select a COM port" + Environment.NewLine);
                     return;
                 }
-                SelectedComPort = lbCOMPorts.SelectedItem.ToString();
                 _serialPort = new SerialPort(SelectedComPort, 460800, Parity.None, 8, StopBits.One);
                 _serialPort.Open();
                 btnConnect.Text = "Disconnect";
@@ -309,7 +250,8 @@ namespace TeensyFlasher
         {
             if (lbCOMPorts.SelectedIndex > -1)
             {
-                btnConnect.Enabled = true;
+                SelectedComPort = lbCOMPorts.SelectedItem.ToString();
+btnConnect.Enabled = true;
             }
             else
             {
@@ -319,6 +261,7 @@ namespace TeensyFlasher
 
         private void safeChat(string chat)
         {
+            if (isClosing) { return; }
             txtSerialChat.Invoke(new MethodInvoker(delegate
             {
                 txtSerialChat.AppendText(chat + Environment.NewLine);
@@ -704,8 +647,11 @@ namespace TeensyFlasher
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            isClosing = true;
             if (isReadingData)
             {
+                _waitForAckNak.Dispose();
+                _waitForMonVer.Dispose();
                 StopReadingData();
             }
             base.OnFormClosing(e);
@@ -724,7 +670,7 @@ namespace TeensyFlasher
             // ".\UBX_F9_100_HPG113.7e6e899c5597acddf2f5f2f70fdf5fbe.bin"
 
             var batchFile = Path.GetTempPath() + "flashf9p.bat";
-            File.WriteAllText(batchFile, "ubxfwupdate -p \\\\.\\COM4 -b 460800:9600:460800 --no-fis 1 -s 0 -t 0 -v 1 UBX113.bin");
+            File.WriteAllText(batchFile, "ubxfwupdate -p \\\\.\\" + SelectedComPort + " -b 460800:9600:460800 --no-fis 1 -s 0 -t 0 -v 1 UBX113.bin");
             File.AppendAllText(batchFile, "\r\npause");
 
             txtSerialChat.AppendText("Flashing F9P firmware" + Environment.NewLine);
