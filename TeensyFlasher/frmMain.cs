@@ -578,7 +578,7 @@ namespace TeensyFlasher
                     msgBytes[i] = 0x01;
                 }
             }
-            msgBytes[7] = 2;
+            msgBytes[7] = 5;
             UbxCalculateCheckSum(msgBytes);
 
             _ack = false;
@@ -696,6 +696,10 @@ namespace TeensyFlasher
 
         private void btnF9PFlashFirmware_Click(object sender, EventArgs e)
         {
+            if (MessageBox.Show("This will flash the F9P with v1.13. It will take a while.\r\n\r\nDo not interrupt it!\r\n\r\nReady?", "Flash F9P", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+            {
+                return;
+            }
             if (isReadingData)
             {
                 StopReadingData();
@@ -725,6 +729,7 @@ namespace TeensyFlasher
             }
             if (lblFirmwareWarning.ForeColor == Color.Red)
             {
+                MessageBox.Show("Firmware MUST be version 1.13. Please flash it first.","Error!!",MessageBoxButtons.OK,MessageBoxIcon.Error);
                 txtSerialChat.AppendText("Firmware MUST be version 1.13. Please flash it first." + Environment.NewLine);
                 return;
             }

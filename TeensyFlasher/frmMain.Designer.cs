@@ -39,6 +39,7 @@ namespace TeensyFlasher
         {
             this.tbPages = new System.Windows.Forms.TabControl();
             this.tabGPS = new System.Windows.Forms.TabPage();
+            this.pbConfiguration = new System.Windows.Forms.ProgressBar();
             this.pblF9PConfig = new System.Windows.Forms.Panel();
             this.rbDualRelPos = new System.Windows.Forms.RadioButton();
             this.rbDualLocation = new System.Windows.Forms.RadioButton();
@@ -52,7 +53,6 @@ namespace TeensyFlasher
             this.txtSerialChat = new System.Windows.Forms.TextBox();
             this.lbCOMPorts = new System.Windows.Forms.ListBox();
             this.btnURefresh = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
             this.lblUblox = new System.Windows.Forms.Label();
             this.tabTeensy = new System.Windows.Forms.TabPage();
             this.lbTeensies = new System.Windows.Forms.ListBox();
@@ -64,7 +64,6 @@ namespace TeensyFlasher
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.lbFirmware = new System.Windows.Forms.ListBox();
-            this.pbConfiguration = new System.Windows.Forms.ProgressBar();
             this.tbPages.SuspendLayout();
             this.tabGPS.SuspendLayout();
             this.pblF9PConfig.SuspendLayout();
@@ -97,7 +96,6 @@ namespace TeensyFlasher
             this.tabGPS.Controls.Add(this.txtSerialChat);
             this.tabGPS.Controls.Add(this.lbCOMPorts);
             this.tabGPS.Controls.Add(this.btnURefresh);
-            this.tabGPS.Controls.Add(this.label3);
             this.tabGPS.Controls.Add(this.lblUblox);
             this.tabGPS.Location = new System.Drawing.Point(4, 45);
             this.tabGPS.Margin = new System.Windows.Forms.Padding(4);
@@ -106,6 +104,13 @@ namespace TeensyFlasher
             this.tabGPS.TabIndex = 1;
             this.tabGPS.Text = "Ublox";
             this.tabGPS.UseVisualStyleBackColor = true;
+            // 
+            // pbConfiguration
+            // 
+            this.pbConfiguration.Location = new System.Drawing.Point(27, 644);
+            this.pbConfiguration.Name = "pbConfiguration";
+            this.pbConfiguration.Size = new System.Drawing.Size(904, 23);
+            this.pbConfiguration.TabIndex = 13;
             // 
             // pblF9PConfig
             // 
@@ -248,18 +253,6 @@ namespace TeensyFlasher
             this.btnURefresh.UseVisualStyleBackColor = true;
             this.btnURefresh.Click += new System.EventHandler(this.btnURefresh_Click);
             // 
-            // label3
-            // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(398, 21);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(516, 25);
-            this.label3.TabIndex = 1;
-            this.label3.Text = "Please ensure F9P is plugged in with USB next to antenna";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.TopRight;
-            // 
             // lblUblox
             // 
             this.lblUblox.AutoSize = true;
@@ -384,13 +377,6 @@ namespace TeensyFlasher
             this.lbFirmware.Size = new System.Drawing.Size(919, 204);
             this.lbFirmware.TabIndex = 11;
             // 
-            // pbConfiguration
-            // 
-            this.pbConfiguration.Location = new System.Drawing.Point(27, 644);
-            this.pbConfiguration.Name = "pbConfiguration";
-            this.pbConfiguration.Size = new System.Drawing.Size(904, 23);
-            this.pbConfiguration.TabIndex = 13;
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -426,7 +412,6 @@ namespace TeensyFlasher
         private Label label1;
         private ListBox lbFirmware;
         private Button btnURefresh;
-        private Label label3;
         private Label lblUblox;
         private TextBox txtSerialChat;
         private ListBox lbCOMPorts;
